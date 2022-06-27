@@ -17,6 +17,7 @@
 # Application ingores
 /conf.ini
 /go_build_*.exe
+/*.db
 
 # IDE
 /.idea/
