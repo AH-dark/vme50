@@ -36,7 +36,7 @@ func migration() {
 		DB = DB.Set("gorm:table_options", "ENGINE=InnoDB")
 	}
 
-	err := DB.AutoMigrate(&Setting{})
+	err := DB.AutoMigrate(&Setting{}, &DonateInfo{})
 	if err != nil {
 		utils.Log().Panic("数据库初始化时错误，", err.Error())
 		return
