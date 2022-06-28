@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/AH-dark/random-donate/database"
 	"github.com/AH-dark/random-donate/model"
+	"github.com/AH-dark/random-donate/model/payment"
 	"github.com/AH-dark/random-donate/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"math/rand"
@@ -32,7 +33,7 @@ func DonatePostHandler(context *gin.Context) {
 
 	// check payment and url
 	switch data.Payment {
-	case "alipay":
+	case payment.Alipay:
 		if !strings.HasPrefix(data.Url, "https://qr.alipay.com/") {
 			context.JSON(http.StatusBadRequest, &model.ApiResponse{
 				Code:    http.StatusBadRequest,
@@ -40,7 +41,7 @@ func DonatePostHandler(context *gin.Context) {
 			})
 			return
 		}
-	case "wechat":
+	case payment.Wechat:
 		if !strings.HasPrefix(data.Url, "wxp://") {
 			context.JSON(http.StatusBadRequest, &model.ApiResponse{
 				Code:    http.StatusBadRequest,
