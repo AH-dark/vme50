@@ -21,8 +21,15 @@ func InitRouter() *gin.Engine {
 	{
 		v1.GET("/ping", controller.PingHandler)
 
-		v1.GET("/donate/random", controller.DonateRandomGetHandler)
-		v1.POST("/donate", controller.DonatePostHandler)
+		{
+			v1.GET("/siteInfo", controller.GetBasicSettings)
+			v1.GET("/settings/basic", controller.GetBasicSettings)
+		}
+
+		{
+			v1.GET("/donate/random", controller.DonateRandomGetHandler)
+			v1.POST("/donate", controller.DonatePostHandler)
+		}
 	}
 
 	return r
