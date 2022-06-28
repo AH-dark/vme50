@@ -10,7 +10,7 @@ func needMigration() bool {
 	err := DB.Where(&Setting{
 		Name: "db_version",
 		Type: "system",
-	}).First(str).Error
+	}).First(&str).Error
 
 	if err != nil {
 		return true
