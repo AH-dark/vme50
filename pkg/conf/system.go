@@ -1,6 +1,6 @@
 package conf
 
 const (
-	AppVersion = "beta.0.1"
-	DbVersion  = "beta.0.1"
+	AppVersion = "beta.0.2"
+	DbVersion  = "beta.0.2"
 )

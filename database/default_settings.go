@@ -8,4 +8,5 @@ var defaultSettings = []Setting{
 	{Name: "site_url", Type: "basic", Value: "http://localhost:8080/"},
 	{Name: "site_name", Type: "basic", Value: "v我50"},
 	{Name: "site_description", Type: "basic", Value: "v我50，为你一生做牛做马"},
+	{Name: "about_info", Type: "basic", Value: "v我50，为你一生做牛做马！\n可点击“上传”按钮上传收款码获取随机打赏。"},
 }

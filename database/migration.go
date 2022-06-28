@@ -44,6 +44,12 @@ func migration() {
 
 	addDefaultSettings()
 
+	DB.Save(&Setting{
+		Name:  "db_version",
+		Type:  "system",
+		Value: conf.DbVersion,
+	})
+
 	utils.Log().Info("数据库初始化结束")
 }
 
