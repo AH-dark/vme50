@@ -10,7 +10,7 @@ require (
 	github.com/go-ini/ini v1.66.6
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/makiuchi-d/gozxing v0.1.1
-	github.com/stretchr/testify v1.7.2
+	github.com/stretchr/testify v1.8.0
 	gorm.io/driver/mysql v1.3.4
 	gorm.io/driver/postgres v1.3.7
 	gorm.io/driver/sqlite v1.3.5
