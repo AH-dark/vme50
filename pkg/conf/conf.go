@@ -5,7 +5,11 @@ import (
 	"github.com/go-ini/ini"
 )
 
-var conf *ini.File
+var (
+	FilePath       string
+	UpdateDatabase bool
+	conf           *ini.File
+)
 
 const defaultConf = `[System]
 Debug = false
@@ -13,8 +17,9 @@ Listen = :8080
 SessionSecret = {SessionSecret}
 `
 
-func Init(path string) {
+func Init() {
 	var err error
+	path := FilePath
 
 	if path == "" || !utils.Exists(path) {
 		// 创建初始配置文件

@@ -1,6 +1,8 @@
-package database
+package model
 
-import "github.com/AH-dark/random-donate/pkg/conf"
+import (
+	"github.com/AH-dark/random-donate/pkg/conf"
+)
 
 var defaultSettings = []Setting{
 	{Name: "app_version", Type: "system", Value: conf.AppVersion},

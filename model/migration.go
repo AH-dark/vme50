@@ -1,4 +1,4 @@
-package database
+package model
 
 import (
 	"github.com/AH-dark/random-donate/pkg/conf"
@@ -24,7 +24,7 @@ func needMigration() bool {
 }
 
 func migration() {
-	if !needMigration() {
+	if !conf.UpdateDatabase && !needMigration() {
 		utils.Log().Info("数据库版本匹配，跳过初始化")
 		return
 	}
@@ -44,11 +44,10 @@ func migration() {
 
 	addDefaultSettings()
 
-	DB.Save(&Setting{
-		Name:  "db_version",
-		Type:  "system",
-		Value: conf.DbVersion,
-	})
+	utils.Log().Info("准备更新数据库版本信息")
+
+	updateSetting("app_version", conf.AppVersion)
+	updateSetting("db_version", conf.DbVersion)
 
 	utils.Log().Info("数据库初始化结束")
 }
@@ -59,4 +58,15 @@ func addDefaultSettings() {
 			Name: value.Name,
 		}).Create(&value)
 	}
+}
+
+func updateSetting(name string, value string) {
+	var data Setting
+	DB.Where(&Setting{
+		Name: name,
+	}).First(&data)
+
+	data.Value = value
+
+	DB.Save(&data)
 }

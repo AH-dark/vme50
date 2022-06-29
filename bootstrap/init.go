@@ -6,11 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Init(path string) {
+func Init() {
 	fmt.Println("应用程序已启动")
 
 	// init config
-	conf.Init(path)
+	conf.Init()
 
 	// Debug 关闭时，切换为生产模式
 	if !conf.SystemConfig.Debug {

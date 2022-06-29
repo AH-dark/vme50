@@ -1,103 +1,109 @@
 package controller
 
 import (
-	"github.com/AH-dark/random-donate/database"
+	"github.com/AH-dark/random-donate/dataType"
+	"github.com/AH-dark/random-donate/dataType/payment"
 	"github.com/AH-dark/random-donate/model"
-	"github.com/AH-dark/random-donate/model/payment"
+	"github.com/AH-dark/random-donate/pkg/response"
 	"github.com/AH-dark/random-donate/pkg/utils"
+	"github.com/AH-dark/random-donate/service"
 	"github.com/gin-gonic/gin"
-	"math/rand"
+	_ "image/jpeg"
+	_ "image/png"
 	"net/http"
 	"strings"
 )
 
-func DonatePostHandler(context *gin.Context) {
-	if context.Request.Method != http.MethodPost {
-		context.JSON(http.StatusMethodNotAllowed, &model.ApiResponse{
-			Code:    405,
-			Message: "method not allowed",
-		})
+func DonatePostHandler(c *gin.Context) {
+	var data dataType.DonateInfoReq
+	err := c.ShouldBind(&data)
+	if err != nil {
+		response.ErrorHandle(c, err, http.StatusInternalServerError)
 		return
 	}
 
-	data := &database.DonateInfo{}
-	err := context.BindJSON(&data)
+	url, err := utils.ParseQRCode(data.QRCode)
 	if err != nil {
-		utils.Log().Error(err.Error())
-		context.JSON(http.StatusInternalServerError, &model.ApiResponse{
-			Code:    http.StatusInternalServerError,
-			Message: "server error",
-		})
+		response.ErrorHandle(c, err, http.StatusInternalServerError)
 		return
 	}
 
 	// check payment and url
 	switch data.Payment {
 	case payment.Alipay:
-		if !strings.HasPrefix(data.Url, "https://qr.alipay.com/") {
-			context.JSON(http.StatusBadRequest, &model.ApiResponse{
+		if !strings.HasPrefix(url, "https://qr.alipay.com/") {
+			c.JSON(http.StatusBadRequest, &dataType.ApiResponse{
 				Code:    http.StatusBadRequest,
-				Message: "url is not legal",
+				Message: "qrcode is not legal",
 			})
 			return
 		}
 	case payment.Wechat:
-		if !strings.HasPrefix(data.Url, "wxp://") {
-			context.JSON(http.StatusBadRequest, &model.ApiResponse{
+		if !strings.HasPrefix(url, "wxp://") {
+			c.JSON(http.StatusBadRequest, &dataType.ApiResponse{
 				Code:    http.StatusBadRequest,
-				Message: "url is not legal",
+				Message: "qrcode is not legal",
 			})
 			return
 		}
 	default:
-		context.JSON(http.StatusBadRequest, &model.ApiResponse{
+		c.JSON(http.StatusBadRequest, &dataType.ApiResponse{
 			Code:    http.StatusBadRequest,
 			Message: "payment is not legal",
 		})
 		return
 	}
 
-	// insert to database
-	err = database.DB.Save(data).Error
-	if err != nil {
-		utils.Log().Error(err.Error())
-		context.JSON(http.StatusInternalServerError, &model.ApiResponse{
-			Code:    http.StatusInternalServerError,
-			Message: "server error",
-		})
-		return
+	// generate data
+	dbData := model.DonateInfo{
+		Name:    data.Name,
+		Email:   data.Email,
+		Payment: data.Payment,
+		Url:     url,
 	}
 
-	context.JSON(http.StatusOK, &model.ApiResponse{
-		Code:    http.StatusOK,
-		Message: "success",
-	})
-}
-
-func DonateRandomGetHandler(c *gin.Context) {
-	var count int64 = 0
-	database.DB.Model(&database.DonateInfo{}).Count(&count)
-	if count < 1 {
-		utils.Log().Warning("Donate Info 表中无数据")
-		c.JSON(http.StatusInternalServerError, &model.ApiResponse{
-			Code:    http.StatusInternalServerError,
+	// find if exist
+	isExist, err := service.DonateInfoIsExist(&model.DonateInfo{Email: data.Email})
+	if err != nil {
+		response.ServerErrorHandle(c, err)
+		return
+	} else if !isExist {
+		c.JSON(http.StatusBadRequest, &dataType.ApiResponse{
+			Code:    http.StatusBadRequest,
 			Message: "data not exist",
 		})
 		return
 	}
 
-	data := database.DonateInfo{}
-	err := database.DB.Offset(rand.Intn(int(count - 1))).First(&data).Error
+	// insert to database
+	err = service.DonateInfoSave(&dbData)
 	if err != nil {
-		utils.Log().Error(err.Error())
-		c.JSON(http.StatusInternalServerError, &model.ApiResponse{
-			Code:    http.StatusInternalServerError,
-			Message: "server error",
-		})
+		response.ServerErrorHandle(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, &model.ApiResponse{
+	// get full data
+	dbData, err = service.DonateInfoFind(&dbData)
+	if err != nil {
+		response.ServerErrorHandle(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, &dataType.ApiResponse{
+		Code:    http.StatusOK,
+		Message: "success",
+		Data:    dbData,
+	})
+}
+
+func DonateRandomGetHandler(c *gin.Context) {
+	data, err := service.DonateInfoRandomGet()
+	if err != nil {
+		response.ServerErrorHandle(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, &dataType.ApiResponse{
 		Code:    http.StatusOK,
 		Message: "success",
 		Data:    data,

@@ -1,4 +1,4 @@
-package database
+package model
 
 import (
 	"github.com/AH-dark/random-donate/pkg/cache"
