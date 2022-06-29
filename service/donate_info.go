@@ -3,21 +3,13 @@ package service
 import (
 	"errors"
 	"github.com/AH-dark/random-donate/model"
+	"gorm.io/gorm"
 	"math/rand"
+	"strconv"
 )
 
-func DonateInfoCount(info *model.DonateInfo) (int64, error) {
-	var count int64
-	err := model.DB.Where(info).Count(&count).Error
-	if err != nil {
-		return 0, err
-	}
-
-	return count, nil
-}
-
 func DonateInfoIsExist(info *model.DonateInfo) (bool, error) {
-	count, err := DonateInfoCount(info)
+	count, err := Count(&info)
 	if err != nil {
 		return false, err
 	}
@@ -36,19 +28,29 @@ func DonateInfoFind(info *model.DonateInfo) (model.DonateInfo, error) {
 	return dbData, err
 }
 
-func DonateInfoRandomGet() (model.DonateInfo, error) {
-	count, err := DonateInfoCount(&model.DonateInfo{})
-	if err != nil {
-		return model.DonateInfo{}, err
-	}
-	if count < 1 {
-		return model.DonateInfo{}, errors.New("no data exist")
+func DonateInfoRandomGet(prevId string) (model.DonateInfo, error) {
+	var data model.DonateInfo
+	prevIdNum, _ := strconv.Atoi(prevId)
+	not := model.DonateInfo{
+		Model: gorm.Model{
+			ID: uint(prevIdNum),
+		},
 	}
 
-	data := model.DonateInfo{}
-	err = model.DB.Offset(rand.Intn(int(count - 1))).First(&data).Error
+	var count int64
+
+	err := model.DB.Model(&model.DonateInfo{}).Not(&not).Count(&count).Error
 	if err != nil {
-		return model.DonateInfo{}, err
+		return data, err
+	}
+
+	if count < 1 {
+		return data, errors.New("no data exist")
+	}
+
+	err = model.DB.Not(&not).Offset(rand.Intn(int(count))).First(&data).Error
+	if err != nil {
+		return data, err
 	}
 
 	return data, nil

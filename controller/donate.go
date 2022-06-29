@@ -97,7 +97,7 @@ func DonatePostHandler(c *gin.Context) {
 }
 
 func DonateRandomGetHandler(c *gin.Context) {
-	data, err := service.DonateInfoRandomGet()
+	data, err := service.DonateInfoRandomGet(c.Query("prevId"))
 	if err != nil {
 		response.ServerErrorHandle(c, err)
 		return
