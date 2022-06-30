@@ -21,7 +21,6 @@ func initCors(r *gin.Engine) {
 
 			return false
 		},
-		AllowOrigins:     conf.CORSConfig.AllowOrigins,
 		AllowMethods:     conf.CORSConfig.AllowMethods,
 		AllowHeaders:     conf.CORSConfig.AllowHeaders,
 		AllowCredentials: true,
