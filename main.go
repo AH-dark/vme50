@@ -6,7 +6,7 @@ import (
 	"github.com/AH-dark/random-donate/model"
 	"github.com/AH-dark/random-donate/pkg/conf"
 	"github.com/AH-dark/random-donate/pkg/utils"
-	"github.com/AH-dark/random-donate/router"
+	"github.com/AH-dark/random-donate/routers"
 )
 
 func init() {
@@ -22,7 +22,7 @@ func main() {
 	model.Init()
 
 	// 路由初始化
-	r := router.InitRouter()
+	r := routers.InitRouter()
 
 	// 监听
 	utils.Log().Info("Application will listen " + conf.SystemConfig.Port + ".")

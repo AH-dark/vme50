@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/AH-dark/random-donate/dataType"
 	"github.com/AH-dark/random-donate/dataType/payment"
 	"github.com/AH-dark/random-donate/model"
@@ -97,11 +98,25 @@ func DonatePostHandler(c *gin.Context) {
 }
 
 func DonateRandomGetHandler(c *gin.Context) {
-	data, err := service.DonateInfoRandomGet(c.Query("prevId"))
+	// 取值处理
+	sessPrevId := utils.GetSession(c, "random_donate_prev_id")
+	prevId := "0"
+	if sessPrevId != nil {
+		prevId = fmt.Sprintf("%v", sessPrevId)
+	}
+
+	// 获取数据
+	data, err := service.DonateInfoRandomGet(prevId)
 	if err != nil {
 		response.ServerErrorHandle(c, err)
 		return
 	}
+
+	utils.SetSession(c, map[string]interface{}{
+		"random_donate_prev_id": data.ID,
+	})
+
+	utils.Log().Debug("random donate info: prev: %v, new: %d", prevId, data.ID)
 
 	c.JSON(http.StatusOK, &dataType.ApiResponse{
 		Code:    http.StatusOK,

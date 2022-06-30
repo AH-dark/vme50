@@ -1,17 +1,13 @@
-package router
+package routers
 
 import (
 	"github.com/AH-dark/random-donate/pkg/conf"
 	"github.com/gin-contrib/cors"
-	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 )
 
-func InitRouter() *gin.Engine {
-	r := gin.Default()
-
-	// cors
-	r.Use(cors.New(cors.Config{
+func initCors(r *gin.Engine) {
+	config := cors.Config{
 		AllowOriginFunc: func(origin string) bool {
 			if gin.Mode() != gin.ReleaseMode {
 				return true
@@ -25,17 +21,15 @@ func InitRouter() *gin.Engine {
 
 			return false
 		},
+		AllowOrigins:     conf.CORSConfig.AllowOrigins,
 		AllowMethods:     conf.CORSConfig.AllowMethods,
 		AllowHeaders:     conf.CORSConfig.AllowHeaders,
 		AllowCredentials: true,
 		ExposeHeaders:    conf.CORSConfig.ExposeHeaders,
 		MaxAge:           3600,
-	}))
-	// gzip
-	r.Use(gzip.Gzip(gzip.DefaultCompression))
+	}
 
-	// api
-	initApiV1(r)
+	handler := cors.New(config)
 
-	return r
+	r.Use(handler)
 }
