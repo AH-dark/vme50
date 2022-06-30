@@ -2,7 +2,9 @@ package model
 
 import (
 	"github.com/AH-dark/random-donate/pkg/conf"
+	"github.com/AH-dark/random-donate/pkg/encrypt"
 	"github.com/AH-dark/random-donate/pkg/utils"
+	"gorm.io/gorm"
 )
 
 func needMigration() bool {
@@ -36,13 +38,14 @@ func migration() {
 		DB = DB.Set("gorm:table_options", "ENGINE=InnoDB")
 	}
 
-	err := DB.AutoMigrate(&Setting{}, &DonateInfo{})
+	err := DB.AutoMigrate(&Setting{}, &DonateInfo{}, &User{})
 	if err != nil {
 		utils.Log().Panic("数据库初始化时错误，", err.Error())
 		return
 	}
 
 	addDefaultSettings()
+	addDefaultUser()
 
 	utils.Log().Info("准备更新数据库版本信息")
 
@@ -58,6 +61,28 @@ func addDefaultSettings() {
 			Name: value.Name,
 		}).Create(&value)
 	}
+}
+
+func addDefaultUser() {
+	pass := utils.RandStringRunes(12)
+	data := &User{
+		Username:    "admin",
+		Nickname:    "Admin",
+		Email:       "admin@example.com",
+		Password:    encrypt.Pass(pass),
+		Description: "",
+		Role:        1,
+	}
+
+	DB.Model(&User{}).Where(&User{
+		Model: gorm.Model{
+			ID: 1,
+		},
+	}).Create(&data)
+
+	utils.Log().Info("初始管理员用户名：%v", data.Username)
+	utils.Log().Info("初始管理员邮箱：%v", data.Email)
+	utils.Log().Info("初始管理员密码：%v", pass)
 }
 
 func updateSetting(name string, value string) {

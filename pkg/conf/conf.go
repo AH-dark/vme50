@@ -15,6 +15,7 @@ const defaultConf = `[System]
 Debug = false
 Listen = :8080
 SessionSecret = {SessionSecret}
+HashSecret = {HashSecret}
 `
 
 func Init() {
@@ -24,7 +25,8 @@ func Init() {
 	if path == "" || !utils.Exists(path) {
 		// 创建初始配置文件
 		confContent := utils.Replace(map[string]string{
-			"{SessionSecret}": utils.RandStringRunes(64), // random
+			"{SessionSecret}": utils.RandStringRunes(32), // random
+			"{HashSecret}":    utils.RandStringRunes(32), // random
 		}, defaultConf)
 
 		f, err := utils.CreatNestedFile(path)
