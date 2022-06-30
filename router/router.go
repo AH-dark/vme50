@@ -1,7 +1,6 @@
 package router
 
 import (
-	"github.com/AH-dark/random-donate/controller"
 	"github.com/AH-dark/random-donate/pkg/conf"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
@@ -36,21 +35,7 @@ func InitRouter() *gin.Engine {
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	// api
-	v1 := r.Group("/api/v1")
-
-	{
-		v1.GET("/ping", controller.PingHandler)
-
-		{
-			v1.GET("/siteInfo", controller.GetBasicSettings)
-			v1.GET("/settings/basic", controller.GetBasicSettings)
-		}
-
-		{
-			v1.GET("/donate/random", controller.DonateRandomGetHandler)
-			v1.POST("/donate", controller.DonatePostHandler)
-		}
-	}
+	initApiV1(r)
 
 	return r
 }

@@ -10,7 +10,7 @@ import (
 
 var Store memstore.Store
 
-func Session(c *gin.Context) gin.HandlerFunc {
+func Session() gin.HandlerFunc {
 	Store = memstore.NewStore([]byte(conf.SystemConfig.SessionSecret))
 	Store.Options(sessions.Options{HttpOnly: true, MaxAge: 3 * 86400, Path: "/", SameSite: http.SameSiteNoneMode})
 	return sessions.Sessions(conf.DatabaseConfig.TablePrefix+"session", Store)
