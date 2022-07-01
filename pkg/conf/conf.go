@@ -5,18 +5,19 @@ import (
 	"github.com/go-ini/ini"
 )
 
-var (
-	FilePath       string
-	UpdateDatabase bool
-	conf           *ini.File
-)
-
 const defaultConf = `[System]
 Debug = false
 Listen = :8080
 SessionSecret = {SessionSecret}
 HashSecret = {HashSecret}
 `
+
+var (
+	FilePath       string
+	UpdateDatabase bool
+)
+
+var conf *ini.File
 
 func Init() {
 	var err error

@@ -1,20 +1,32 @@
 package main
 
 import (
+	_ "embed"
 	"flag"
 	"github.com/AH-dark/random-donate/bootstrap"
 	"github.com/AH-dark/random-donate/model"
 	"github.com/AH-dark/random-donate/pkg/conf"
 	"github.com/AH-dark/random-donate/pkg/utils"
 	"github.com/AH-dark/random-donate/routers"
+	"github.com/mholt/archiver/v4"
+	"io"
+	"strings"
 )
+
+//go:embed assets/out.zip
+var staticZip string
 
 func init() {
 	flag.StringVar(&conf.FilePath, "c", utils.RelativePath("conf.ini"), "配置文件路径")
 	flag.BoolVar(&conf.UpdateDatabase, "u", false, "是否更新数据库")
 	flag.Parse()
 
-	bootstrap.Init()
+	static := archiver.ArchiveFS{
+		Stream: io.NewSectionReader(strings.NewReader(staticZip), 0, int64(len(staticZip))),
+		Format: archiver.Zip{},
+	}
+
+	bootstrap.Init(static)
 }
 
 func main() {

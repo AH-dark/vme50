@@ -64,6 +64,17 @@ func addDefaultSettings() {
 }
 
 func addDefaultUser() {
+	var count int64
+	DB.Model(&User{}).Where(&User{
+		Model: gorm.Model{
+			ID: 1,
+		},
+	}).Count(&count)
+
+	if count != 0 {
+		return
+	}
+
 	pass := utils.RandStringRunes(12)
 	data := &User{
 		Username:    "admin",

@@ -1,4 +1,4 @@
-package routers
+package middleware
 
 import (
 	"github.com/AH-dark/random-donate/pkg/conf"
@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func initCors(r *gin.Engine) {
+func Cors() gin.HandlerFunc {
 	config := cors.Config{
 		AllowOriginFunc: func(origin string) bool {
 			if gin.Mode() != gin.ReleaseMode {
@@ -30,5 +30,5 @@ func initCors(r *gin.Engine) {
 
 	handler := cors.New(config)
 
-	r.Use(handler)
+	return handler
 }

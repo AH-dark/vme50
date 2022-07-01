@@ -9,19 +9,22 @@ import (
 func initApiV1(r *gin.Engine) {
 	v1 := r.Group("/api/v1")
 	v1.Use(middleware.Session())
+	v1.Use(middleware.CacheControl())
 
 	// ping
 	v1.GET("/ping", controller.PingHandler)
 
 	// settings
+	settings := v1.Group("settings")
 	{
 		v1.GET("/siteInfo", controller.GetBasicSettings)
-		v1.GET("/settings/basic", controller.GetBasicSettings)
+		settings.GET("basic", controller.GetBasicSettings)
 	}
 
 	// donate
+	donate := v1.Group("donate")
 	{
-		v1.GET("/donate/random", controller.DonateRandomGetHandler)
-		v1.POST("/donate", controller.DonatePostHandler)
+		donate.GET("random", controller.DonateRandomGetHandler)
+		donate.POST("", controller.DonatePostHandler)
 	}
 }
