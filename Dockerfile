@@ -22,6 +22,8 @@ RUN zip -q assets.zip -r out
 
 FROM golang:alpine AS go-builder
 
+WORKDIR /app
+
 COPY . .
 
 RUN rm -rf assets
