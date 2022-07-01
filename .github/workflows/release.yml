@@ -1,0 +1,48 @@
+name: Go
+
+on:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
+      - name: Build
+        run: chmod +x build.sh && bash build.sh
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: linux_amd64_random-donate
+          path: build/linux_amd64_random_donate
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: linux_arm64_random_donate
+          path: build/linux_arm64_random_donate
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: darwin_amd64_random_donate
+          path: build/darwin_amd64_random_donate
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: windows_amd64_random_donate.exe
+          path: build/windows_amd64_random_donate.exe
