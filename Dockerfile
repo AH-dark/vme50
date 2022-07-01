@@ -24,6 +24,8 @@ FROM golang:alpine AS go-builder
 
 WORKDIR /app
 
+RUN apk add build-base
+
 COPY . .
 
 RUN rm -rf assets
