@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-//go:embed assets/out.zip
+//go:embed assets.zip
 var staticZip string
 
 func init() {

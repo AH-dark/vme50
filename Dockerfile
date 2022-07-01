@@ -18,24 +18,25 @@ COPY --from=builder out out
 
 RUN apk update && upgrade
 RUN apk add zip
-RUN zip -q out.zip -r out
+RUN zip -q assets.zip -r out
 
 FROM golang:alpine AS go-builder
 
 COPY . .
 
-RUN rm -rf assets && mkdir assets
-COPY --from=frontend-embed out.zip assets/out.zip
+RUN rm -rf assets
+COPY --from=frontend-embed assets.zip .
 
 RUN go build -a -o randomdonate .
 
 FROM alpine AS runner
 
-COPY --from=go-builder randomdonate .
-COPY conf.ini .
-COPY random_donate.db .
+WORKDIR /app
 
+COPY --from=go-builder randomdonate /app/
+
+VOLUME /app/
 EXPOSE 8080
 
-RUN chmod +x randomdonate
-CMD ./randomdonate
+RUN chmod +x /app/randomdonate
+CMD /app/randomdonate
