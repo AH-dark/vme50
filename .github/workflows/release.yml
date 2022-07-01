@@ -33,6 +33,7 @@ jobs:
       
       - name: Build
         run: |
+          rm -f assets.zip
           zip -q assets.zip -r assets/out
           chmod +x build.sh && bash build.sh
 
