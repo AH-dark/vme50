@@ -37,9 +37,9 @@ FROM alpine AS runner
 
 WORKDIR /app
 
-COPY --from=go-builder randomdonate /app/
+COPY --from=go-builder /app/randomdonate .
 
-VOLUME /app/
+VOLUME /app
 EXPOSE 8080
 
 RUN chmod +x /app/randomdonate
