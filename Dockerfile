@@ -14,7 +14,7 @@ RUN yarn export
 
 FROM node:lts-alpine AS frontend-embed
 
-COPY --from=builder out out
+COPY --from=frontend-builder out out
 
 RUN apk update && upgrade
 RUN apk add zip
