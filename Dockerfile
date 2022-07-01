@@ -16,7 +16,7 @@ FROM node:lts-alpine AS frontend-embed
 
 COPY --from=frontend-builder out out
 
-RUN apk update && upgrade
+RUN apk update && apk upgrade
 RUN apk add zip
 RUN zip -q assets.zip -r out
 
