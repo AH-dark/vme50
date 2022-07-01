@@ -20,14 +20,19 @@ jobs:
         with:
           go-version: 1.18
 
-      - name: Build
+      - name: Build frontend
         run: |
           cd assets
           yarn install
           yarn export
           cd ..
-          apt install build-essential
-          apt install zip
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y build-essential zip
+      
+      - name: Build
+        run: |
           zip -q assets.zip -r assets/out
           chmod +x build.sh && bash build.sh
 
