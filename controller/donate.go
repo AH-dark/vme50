@@ -19,13 +19,13 @@ func DonatePostHandler(c *gin.Context) {
 	var data dataType.DonateInfoReq
 	err := c.ShouldBind(&data)
 	if err != nil {
-		response.ErrorHandle(c, err, http.StatusInternalServerError)
+		response.ServerErrorHandle(c, err)
 		return
 	}
 
 	url, err := utils.ParseQRCode(data.QRCode)
 	if err != nil {
-		response.ErrorHandle(c, err, http.StatusInternalServerError)
+		response.ServerErrorHandle(c, err)
 		return
 	}
 
@@ -68,10 +68,10 @@ func DonatePostHandler(c *gin.Context) {
 	if err != nil {
 		response.ServerErrorHandle(c, err)
 		return
-	} else if !isExist {
+	} else if isExist {
 		c.JSON(http.StatusBadRequest, &dataType.ApiResponse{
 			Code:    http.StatusBadRequest,
-			Message: "data not exist",
+			Message: "data is exist",
 		})
 		return
 	}
