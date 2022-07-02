@@ -16,11 +16,15 @@ FROM node:lts-alpine AS frontend-embed
 
 COPY --from=frontend-builder out out
 
-RUN apk update && upgrade
+RUN apk update && apk upgrade
 RUN apk add zip
 RUN zip -q assets.zip -r out
 
 FROM golang:alpine AS go-builder
+
+WORKDIR /app
+
+RUN apk add build-base
 
 COPY . .
 
@@ -33,9 +37,9 @@ FROM alpine AS runner
 
 WORKDIR /app
 
-COPY --from=go-builder randomdonate /app/
+COPY --from=go-builder /app/randomdonate .
 
-VOLUME /app/
+VOLUME /app
 EXPOSE 8080
 
 RUN chmod +x /app/randomdonate
