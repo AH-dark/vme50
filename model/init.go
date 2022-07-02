@@ -8,6 +8,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
+	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
@@ -54,31 +55,51 @@ func Init() {
 			Logger: newLogger,
 		}
 
+		var dialector gorm.Dialector
+
 		switch conf.DatabaseConfig.Type {
 		case "UNSET", "sqlite", "sqlite3":
 			// 未指定数据库或者明确指定为 sqlite 时，使用 SQLite3 数据库
-			db, err = gorm.Open(sqlite.Open(utils.RelativePath(conf.DatabaseConfig.File)), gormConfig)
+			dialector = sqlite.Open(utils.RelativePath(conf.DatabaseConfig.File))
 		case "postgres":
-			db, err = gorm.Open(postgres.Open(fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
+			dialector = postgres.Open(fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
 				conf.DatabaseConfig.Host,
 				conf.DatabaseConfig.User,
 				conf.DatabaseConfig.Password,
 				conf.DatabaseConfig.Database,
-				conf.DatabaseConfig.Port)), gormConfig)
-		case "mysql", "mssql":
-			db, err = gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@(%s:%d)/%s?charset=%s&parseTime=True&loc=Local",
+				conf.DatabaseConfig.Port))
+		case "mysql":
+			dialector = mysql.New(mysql.Config{
+				DSN: fmt.Sprintf("%s:%s@(%s:%d)/%s?charset=%s&parseTime=True&loc=Local",
+					conf.DatabaseConfig.User,
+					conf.DatabaseConfig.Password,
+					conf.DatabaseConfig.Host,
+					conf.DatabaseConfig.Port,
+					conf.DatabaseConfig.Database,
+					conf.DatabaseConfig.Charset),
+				DefaultStringSize:         256,   // default size for string fields
+				DisableDatetimePrecision:  true,  // disable datetime precision, which not supported before MySQL 5.6
+				DontSupportRenameIndex:    true,  // drop & create when rename index, rename index not supported before MySQL 5.7, MariaDB
+				DontSupportRenameColumn:   true,  // `change` when rename column, rename column not supported before MySQL 8, MariaDB
+				SkipInitializeWithVersion: false, // autoconfigure based on currently MySQL version
+			})
+		case "mssql":
+			dialector = sqlserver.Open(fmt.Sprintf("sqlserver://%s:%s@%s:%d?database=%s",
 				conf.DatabaseConfig.User,
 				conf.DatabaseConfig.Password,
 				conf.DatabaseConfig.Host,
 				conf.DatabaseConfig.Port,
 				conf.DatabaseConfig.Database,
-				conf.DatabaseConfig.Charset)), gormConfig)
+			))
 		default:
 			utils.Log().Panic("不支持数据库类型: %s", conf.DatabaseConfig.Type)
+			return
 		}
+
+		db, err = gorm.Open(dialector, gormConfig)
 	}
 
-	//db.SetLogger(util.Log())
+	// db.SetLogger(util.Log())
 	if err != nil {
 		utils.Log().Panic("连接数据库不成功, %s", err)
 	}
