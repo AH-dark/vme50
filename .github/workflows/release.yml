@@ -41,6 +41,8 @@ jobs:
           rm -f assets.zip
           chmod +x build.sh
           ./build.sh -a
+        env:
+          CGO_ENABLED: 1
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.0
