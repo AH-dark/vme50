@@ -22,21 +22,23 @@ buildAssets() {
 }
 
 buildBinary() {
+  export CGO_ENABLED=1
+
   # linux amd64
-  export GOOS=linux GOARCH=amd64
-  go build -a -o build/linux_amd64_random_donate .
+  export GOOS=linux GOARCH=amd64 CC=gcc
+  go build -a -o build/random_donate_linux_amd64 .
 
   # linux arm64
-  export GOOS=linux GOARCH=arm64
-  go build -a -o build/linux_arm64_random_donate .
+  export GOOS=linux GOARCH=arm64 CC=aarch64-linux-gnu-gcc
+  go build -a -o build/random_donate_linux_arm64 .
 
   # darwin amd64
-  export GOOS=darwin GOARCH=amd64
-  go build -a -o build/darwin_amd64_random_donate .
+  export GOOS=linux GOARCH=arm CC=arm-linux-gnueabihf-gcc
+  go build -a -o build/random_donate_linux_arm .
 
   # windows amd64
-  export GOOS=windows GOARCH=amd64
-  go build -a -o build/windows_amd64_random_donate.exe .
+  export GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc
+  go build -a -o build/random_donate_windows_amd64.exe .
 }
 
 usage() {

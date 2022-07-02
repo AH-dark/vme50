@@ -47,23 +47,23 @@ jobs:
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.0
         with:
-          name: linux_amd64_random-donate
-          path: build/linux_amd64_random_donate
+          name: random_donate_linux_amd64
+          path: build/random_donate_linux_amd64
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.0
         with:
-          name: linux_arm64_random_donate
-          path: build/linux_arm64_random_donate
+          name: random_donate_linux_arm64
+          path: build/random_donate_linux_arm64
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.0
         with:
-          name: darwin_amd64_random_donate
-          path: build/darwin_amd64_random_donate
+          name: random_donate_linux_arm
+          path: build/random_donate_linux_arm
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.0
         with:
-          name: windows_amd64_random_donate.exe
-          path: build/windows_amd64_random_donate.exe
+          name: random_donate_windows_amd64
+          path: build/random_donate_windows_amd64.exe
