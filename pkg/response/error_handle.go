@@ -9,7 +9,7 @@ import (
 
 func ErrorHandle(c *gin.Context, err error, code int) {
 	utils.Log().Error(err.Error())
-	c.JSON(code, &dataType.ApiResponse{
+	c.JSON(code, dataType.ApiResponse{
 		Code:    code,
 		Message: http.StatusText(code),
 	})
@@ -17,10 +17,6 @@ func ErrorHandle(c *gin.Context, err error, code int) {
 }
 
 func ServerErrorHandle(c *gin.Context, err error) {
-	utils.Log().Error(err.Error())
-	c.JSON(http.StatusInternalServerError, &dataType.ApiResponse{
-		Code:    http.StatusInternalServerError,
-		Message: http.StatusText(http.StatusInternalServerError),
-	})
+	ErrorHandle(c, err, http.StatusInternalServerError)
 	return
 }

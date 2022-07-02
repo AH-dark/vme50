@@ -11,12 +11,20 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "image/jpeg"
 	_ "image/png"
+	"mime/multipart"
 	"net/http"
 	"strings"
 )
 
+type donateInfoReq struct {
+	Name    string                `form:"name" json:"name" validate:"required"`
+	Email   string                `form:"email" json:"email" validate:"required"`
+	Payment string                `form:"payment" json:"payment" validate:"required"`
+	QRCode  *multipart.FileHeader `form:"qrcode" json:"-" validate:"required"`
+}
+
 func DonatePostHandler(c *gin.Context) {
-	var data dataType.DonateInfoReq
+	var data donateInfoReq
 	err := c.ShouldBind(&data)
 	if err != nil {
 		response.ServerErrorHandle(c, err)

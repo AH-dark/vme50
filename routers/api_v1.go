@@ -17,7 +17,7 @@ func initApiV1(r *gin.Engine) {
 	// settings
 	settings := v1.Group("settings")
 	{
-		v1.GET("/siteInfo", controller.GetBasicSettings)
+		v1.GET("siteInfo", controller.GetBasicSettings)
 		settings.GET("basic", controller.GetBasicSettings)
 	}
 
@@ -26,5 +26,12 @@ func initApiV1(r *gin.Engine) {
 	{
 		donate.GET("random", controller.DonateRandomGetHandler)
 		donate.POST("", controller.DonatePostHandler)
+	}
+
+	// user
+	user := v1.Group("user")
+	{
+		user.GET("session", controller.SessionUserHandler)
+		user.POST("login", controller.UserLogin)
 	}
 }
