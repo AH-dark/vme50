@@ -14,7 +14,7 @@ func Cors() gin.HandlerFunc {
 			}
 
 			for _, v := range conf.CORSConfig.AllowOrigins {
-				if v == origin {
+				if v == origin || v == "*" {
 					return true
 				}
 			}
