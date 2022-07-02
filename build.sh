@@ -15,6 +15,10 @@ buildAssets() {
   cd $REPO/assets || exit
   yarn install --frozen-lockfile
   yarn export
+  zip -q assets.zip -r out
+
+  cd $REPO || exit
+  mv assets/assets.zip .
 }
 
 buildBinary() {
