@@ -76,7 +76,9 @@ func DonatePostHandler(c *gin.Context) {
 	if err != nil {
 		response.ServerErrorHandle(c, err)
 		return
-	} else if isExist {
+	}
+
+	if isExist {
 		c.JSON(http.StatusBadRequest, &dataType.ApiResponse{
 			Code:    http.StatusBadRequest,
 			Message: "data is exist",

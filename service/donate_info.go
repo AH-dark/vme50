@@ -9,7 +9,7 @@ import (
 )
 
 func DonateInfoIsExist(info *model.DonateInfo) (bool, error) {
-	count, err := Count(&info)
+	count, err := Count(&model.DonateInfo{}, info)
 	if err != nil {
 		return false, err
 	}
