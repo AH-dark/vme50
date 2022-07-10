@@ -18,7 +18,7 @@ import (
 
 type donateInfoReq struct {
 	Name    string                `form:"name" json:"name" validate:"required"`
-	Email   string                `form:"email" json:"email" validate:"required"`
+	Message   string                `form:"message" json:"message"`
 	Payment string                `form:"payment" json:"payment" validate:"required"`
 	QRCode  *multipart.FileHeader `form:"qrcode" json:"-" validate:"required"`
 }
@@ -66,13 +66,14 @@ func DonatePostHandler(c *gin.Context) {
 	// generate data
 	dbData := model.DonateInfo{
 		Name:    data.Name,
-		Email:   data.Email,
+		Message:   data.Message,
 		Payment: data.Payment,
 		Url:     url,
+		Email:    "DEFAULT",
 	}
 
 	// find if exist
-	isExist, err := service.DonateInfoIsExist(&model.DonateInfo{Email: data.Email})
+	isExist, err := service.DonateInfoIsExist(&model.DonateInfo{Url: url})
 	if err != nil {
 		response.ServerErrorHandle(c, err)
 		return

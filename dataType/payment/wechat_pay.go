@@ -1,5 +1,5 @@
 package payment
 
 const (
-	Wechat string = "wechat"
+	Wechat string = "微信"
 )

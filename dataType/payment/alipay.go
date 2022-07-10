@@ -1,5 +1,5 @@
 package payment
 
 const (
-	Alipay string = "alipay"
+	Alipay string = "支付宝"
 )
