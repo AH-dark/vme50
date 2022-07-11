@@ -6,7 +6,7 @@ func Count(info interface{}, condition interface{}, args ...interface{}) (int64,
 	var count int64
 	err := model.DB.Model(info).Where(condition, args...).Count(&count).Error
 	if err != nil {
-		return 0, err
+		return -1, err
 	}
 
 	return count, nil
