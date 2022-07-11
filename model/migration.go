@@ -98,7 +98,7 @@ func addDefaultUser() {
 
 func updateSetting(name string, value string) {
 	var data Setting
-	DB.Where(&Setting{
+	DB.Model(&Setting{}).Where(&Setting{
 		Name: name,
 	}).First(&data)
 
