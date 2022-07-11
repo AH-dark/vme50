@@ -34,5 +34,5 @@ func MD5(msg string) string {
 }
 
 func Pass(pass string) string {
-	return HmacSha256(pass, conf.SystemConfig.HashSecret)
+	return HmacSha256(pass, conf.SystemConfig.HashIDSalt)
 }

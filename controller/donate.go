@@ -5,10 +5,12 @@ import (
 	"github.com/AH-dark/random-donate/dataType"
 	"github.com/AH-dark/random-donate/dataType/payment"
 	"github.com/AH-dark/random-donate/model"
+	"github.com/AH-dark/random-donate/pkg/hash"
 	"github.com/AH-dark/random-donate/pkg/response"
 	"github.com/AH-dark/random-donate/pkg/utils"
 	"github.com/AH-dark/random-donate/service"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	_ "image/jpeg"
 	_ "image/png"
 	"mime/multipart"
@@ -113,13 +115,20 @@ func DonatePostHandler(c *gin.Context) {
 func DonateRandomGetHandler(c *gin.Context) {
 	// 取值处理
 	sessPrevId := utils.GetSession(c, "random_donate_prev_id")
-	prevId := "0"
+	prevHash := hash.Id(0, hash.DonateId)
 	if sessPrevId != nil {
-		prevId = fmt.Sprintf("%v", sessPrevId)
+		prevHash = fmt.Sprintf("%v", sessPrevId)
+	}
+
+	// 获取Hash
+	hashCode, err := hash.DecodeID(prevHash, hash.DonateId)
+	if err != nil {
+		response.ServerErrorHandle(c, err)
+		return
 	}
 
 	// 获取数据
-	data, err := service.DonateInfoRandomGet(prevId)
+	data, err := service.DonateInfoRandomGet(hashCode)
 	if err != nil {
 		response.ServerErrorHandle(c, err)
 		return
@@ -129,11 +138,32 @@ func DonateRandomGetHandler(c *gin.Context) {
 		"random_donate_prev_id": data.ID,
 	})
 
-	utils.Log().Debug("random donate info: prev: %v, new: %d", prevId, data.ID)
+	utils.Log().Debug("random donate info: prev: %v, new: %d", hashCode, data.ID)
 
 	c.JSON(http.StatusOK, &dataType.ApiResponse{
 		Code:    http.StatusOK,
 		Message: "success",
-		Data:    data,
+		Data:    hash.Id(data.ID, hash.DonateId),
 	})
+}
+
+func DonateHashGetHandler(c *gin.Context) {
+	hashCode := c.Param("hash")
+	id, err := hash.DecodeID(hashCode, hash.DonateId)
+	if err != nil {
+		response.ServerErrorHandle(c, err)
+		return
+	}
+
+	donate, err := service.DonateInfoFind(&model.DonateInfo{
+		Model: gorm.Model{
+			ID: id,
+		},
+	})
+	if err != nil {
+		response.ServerErrorHandle(c, err)
+		return
+	}
+
+	response.DataHandle(c, donate)
 }
