@@ -11,10 +11,6 @@ import (
 func DonateInfoIsExist(info *model.DonateInfo) (bool, error) {
 	count, err := Count(&model.DonateInfo{}, info)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return false, nil
-		}
-
 		return false, err
 	}
 
