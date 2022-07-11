@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+// FrontendHandler 前端数据处理
 func FrontendHandler() gin.HandlerFunc {
 	ignoreFunc := func(c *gin.Context) {
 		c.Next()

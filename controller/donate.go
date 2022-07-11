@@ -16,14 +16,15 @@ import (
 	"strings"
 )
 
-type donateInfoReq struct {
-	Name    string                `form:"name" json:"name" validate:"required"`
-	Comment string                `form:"comment" json:"comment" validate:"required"`
-	Payment string                `form:"payment" json:"payment" validate:"required"`
-	QRCode  *multipart.FileHeader `form:"qrcode" json:"-" validate:"required"`
-}
-
+// DonatePostHandler 新增信息
 func DonatePostHandler(c *gin.Context) {
+	type donateInfoReq struct {
+		Name    string                `form:"name" json:"name" validate:"required"`
+		Comment string                `form:"comment" json:"comment" validate:"required"`
+		Payment string                `form:"payment" json:"payment" validate:"required"`
+		QRCode  *multipart.FileHeader `form:"qrcode" json:"-" validate:"required"`
+	}
+
 	var data donateInfoReq
 	err := c.ShouldBind(&data)
 	if err != nil {
@@ -108,6 +109,7 @@ func DonatePostHandler(c *gin.Context) {
 	response.DataHandle(c, dbData)
 }
 
+// DonateRandomGetHandler 随机获取一条信息
 func DonateRandomGetHandler(c *gin.Context) {
 	// 取值处理
 	sessPrevId := utils.GetSession(c, "random_donate_prev_id")
