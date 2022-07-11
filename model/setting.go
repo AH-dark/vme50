@@ -7,8 +7,7 @@ import (
 )
 
 type Setting struct {
-	gorm.Model
-	Name  string `gorm:"not null;unique;index:setting_key" json:"name"`
+	Name  string `gorm:"not null;unique;uniqueIndex;primaryKey" json:"name"`
 	Type  string `gorm:"not null" json:"type"`
 	Value string `gorm:"size:4096" json:"value"`
 }
