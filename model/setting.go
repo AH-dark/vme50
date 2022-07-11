@@ -9,7 +9,7 @@ import (
 type Setting struct {
 	Name  string `gorm:"not null;unique;uniqueIndex;primaryKey" json:"name"`
 	Type  string `gorm:"not null" json:"type"`
-	Value string `gorm:"size:4096" json:"value"`
+	Value string `gorm:"size:256" json:"value"`
 }
 
 func IsTrue(value string) bool {
