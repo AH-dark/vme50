@@ -26,6 +26,7 @@ func initApiV1(r *gin.Engine) {
 	{
 		donate.GET("random", controller.DonateRandomGetHandler)
 		donate.POST("", controller.DonatePostHandler)
+		donate.GET("hash/:hash", controller.DonateHashGetHandler)
 	}
 
 	// user
