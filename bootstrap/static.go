@@ -28,7 +28,7 @@ func (b *GinFS) Exists(prefix string, filepath string) bool {
 
 // InitStatic 初始化静态文件
 func InitStatic(static fs.FS) {
-	embedFS, err := fs.Sub(static, "out")
+	embedFS, err := fs.Sub(static, "build")
 	if err != nil {
 		utils.Log().Panic("无法初始化静态资源, %s", err)
 	}

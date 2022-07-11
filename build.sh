@@ -10,12 +10,12 @@ BINARY="false"
 
 buildAssets() {
   cd $REPO || exit
-  rm -rf assets/out
+  rm -rf assets/build
 
   cd $REPO/assets || exit
   yarn install --frozen-lockfile
-  yarn export
-  zip -q assets.zip -r out
+  yarn build
+  zip -q assets.zip -r build
 
   cd $REPO || exit
   mv assets/assets.zip .

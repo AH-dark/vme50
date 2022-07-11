@@ -15,7 +15,7 @@ require (
 	github.com/mholt/archiver/v4 v4.0.0-alpha.7
 	github.com/stretchr/testify v1.8.0
 	gorm.io/driver/mysql v1.3.5
-	gorm.io/driver/postgres v1.3.7
+	gorm.io/driver/postgres v1.3.8
 	gorm.io/driver/sqlite v1.3.5
 	gorm.io/driver/sqlserver v1.3.2
 	gorm.io/gorm v1.23.8
@@ -61,6 +61,7 @@ require (
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/quasoft/memstore v0.0.0-20191010062613-2bce066d2b0b // indirect
+	github.com/speps/go-hashids v1.0.0 // indirect
 	github.com/therootcompany/xz v1.0.1 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect

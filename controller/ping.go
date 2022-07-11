@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// PingHandler Ping响应
 func PingHandler(context *gin.Context) {
 	context.JSON(200, &dataType.ApiResponse{
 		Code:    200,

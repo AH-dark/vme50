@@ -5,7 +5,7 @@ type system struct {
 	Port          string
 	Debug         bool
 	SessionSecret string
-	HashSecret    string
+	HashIDSalt    string
 }
 
 // 数据库配置
