@@ -43,33 +43,15 @@ func FrontendHandler() gin.HandlerFunc {
 		}
 
 		// index.html
-		if (path == "/index.html") || (path == "/") {
+		if (path == "/") || !bootstrap.StaticFS.Exists("/", path) {
 			c.Header("Content-Type", "text/html")
 			c.String(200, indexFileContent)
 			c.Abort()
 			return
 		}
 
-		// next.js pages
-		if bootstrap.StaticFS.Exists("/", path+".html") {
-			file, err := bootstrap.StaticFS.Open(path)
-			if err != nil {
-				c.String(500, "server error")
-			}
-
-			bytes, err := ioutil.ReadAll(file)
-			if err != nil {
-				c.String(500, "server error")
-			}
-
-			c.Header("Content-Type", "text/html")
-			c.String(200, string(bytes))
-			c.Abort()
-			return
-		}
-
-		// next.js statics
-		if strings.HasPrefix(path, "/_next/") {
+		// react statics
+		if strings.HasPrefix(path, "/static/") {
 			file, err := bootstrap.StaticFS.Open(path)
 			if err != nil {
 				c.String(500, "server error")

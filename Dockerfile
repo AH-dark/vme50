@@ -10,15 +10,15 @@ FROM node:lts-alpine AS frontend-builder
 COPY assets/ .
 COPY --from=frontend-deps node_modules node_modules
 
-RUN yarn export
+RUN yarn build
 
 FROM node:lts-alpine AS frontend-embed
 
-COPY --from=frontend-builder out out
+COPY --from=frontend-builder build build
 
 RUN apk update && apk upgrade
 RUN apk add zip
-RUN zip -q assets.zip -r out
+RUN zip -q assets.zip -r build
 
 FROM golang:alpine AS go-builder
 
