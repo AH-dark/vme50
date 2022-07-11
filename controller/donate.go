@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/AH-dark/random-donate/dataType"
 	"github.com/AH-dark/random-donate/dataType/payment"
 	"github.com/AH-dark/random-donate/model"
@@ -108,7 +107,7 @@ func DonatePostHandler(c *gin.Context) {
 		return
 	}
 
-	response.DataHandle(c, dbData)
+	response.DataHandle(c, hash.Id(dbData.ID, hash.DonateId))
 }
 
 // DonateRandomGetHandler 随机获取一条信息
@@ -117,7 +116,7 @@ func DonateRandomGetHandler(c *gin.Context) {
 	sessPrevId := utils.GetSession(c, "random_donate_prev_id")
 	prevHash := hash.Id(0, hash.DonateId)
 	if sessPrevId != nil {
-		prevHash = fmt.Sprintf("%v", sessPrevId)
+		prevHash = sessPrevId.(string)
 	}
 
 	// 获取Hash
