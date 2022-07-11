@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"github.com/AH-dark/random-donate/model"
+	"github.com/AH-dark/random-donate/pkg/utils"
 	"gorm.io/gorm"
 	"math/rand"
 	"strconv"
@@ -13,6 +14,8 @@ func DonateInfoIsExist(info *model.DonateInfo) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+
+	utils.Log().Debug("Count Table DonateInfo, has %d rows", count)
 
 	return count != 0, nil
 }

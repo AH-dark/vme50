@@ -18,7 +18,7 @@ import (
 
 type donateInfoReq struct {
 	Name    string                `form:"name" json:"name" validate:"required"`
-	Email   string                `form:"email" json:"email" validate:"required"`
+	Comment string                `form:"comment" json:"comment" validate:"required"`
 	Payment string                `form:"payment" json:"payment" validate:"required"`
 	QRCode  *multipart.FileHeader `form:"qrcode" json:"-" validate:"required"`
 }
@@ -64,15 +64,20 @@ func DonatePostHandler(c *gin.Context) {
 	}
 
 	// generate data
+	user, _ := service.GetUserBySession(c)
 	dbData := model.DonateInfo{
 		Name:    data.Name,
-		Email:   data.Email,
+		Comment: data.Comment,
 		Payment: data.Payment,
 		Url:     url,
+		Author:  0,
+	}
+	if user != nil {
+		dbData.Author = user.ID
 	}
 
 	// find if exist
-	isExist, err := service.DonateInfoIsExist(&model.DonateInfo{Email: data.Email})
+	isExist, err := service.DonateInfoIsExist(&model.DonateInfo{Url: dbData.Url})
 	if err != nil {
 		response.ServerErrorHandle(c, err)
 		return
@@ -100,11 +105,7 @@ func DonatePostHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, &dataType.ApiResponse{
-		Code:    http.StatusOK,
-		Message: "success",
-		Data:    dbData,
-	})
+	response.DataHandle(c, dbData)
 }
 
 func DonateRandomGetHandler(c *gin.Context) {
