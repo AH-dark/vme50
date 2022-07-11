@@ -22,7 +22,6 @@ func DonatePostHandler(c *gin.Context) {
 	type donateInfoReq struct {
 		Name    string                `form:"name" json:"name" validate:"required"`
 		Comment string                `form:"comment" json:"comment" validate:"required"`
-		Payment string                `form:"payment" json:"payment" validate:"required"`
 		QRCode  *multipart.FileHeader `form:"qrcode" json:"-" validate:"required"`
 	}
 
@@ -39,43 +38,31 @@ func DonatePostHandler(c *gin.Context) {
 		return
 	}
 
+	// generate data
+	user, _ := service.GetUserBySession(c)
+	dbData := model.DonateInfo{
+		Name:    data.Name,
+		Comment: data.Comment,
+		Payment: "",
+		Url:     url,
+		Author:  0,
+	}
+	if user != nil {
+		dbData.Author = user.ID
+	}
+
 	// check payment and url
-	switch data.Payment {
-	case payment.Alipay:
-		if !strings.HasPrefix(url, "https://qr.alipay.com/") {
-			c.JSON(http.StatusBadRequest, &dataType.ApiResponse{
-				Code:    http.StatusBadRequest,
-				Message: "qrcode is not legal",
-			})
-			return
-		}
-	case payment.Wechat:
-		if !strings.HasPrefix(url, "wxp://") {
-			c.JSON(http.StatusBadRequest, &dataType.ApiResponse{
-				Code:    http.StatusBadRequest,
-				Message: "qrcode is not legal",
-			})
-			return
-		}
+	switch true {
+	case strings.HasPrefix(url, "https://qr.alipay.com/"):
+		dbData.Payment = payment.Alipay
+	case strings.HasPrefix(url, "wxp://"):
+		dbData.Payment = payment.Wechat
 	default:
 		c.JSON(http.StatusBadRequest, &dataType.ApiResponse{
 			Code:    http.StatusBadRequest,
 			Message: "payment is not legal",
 		})
 		return
-	}
-
-	// generate data
-	user, _ := service.GetUserBySession(c)
-	dbData := model.DonateInfo{
-		Name:    data.Name,
-		Comment: data.Comment,
-		Payment: data.Payment,
-		Url:     url,
-		Author:  0,
-	}
-	if user != nil {
-		dbData.Author = user.ID
 	}
 
 	// find if exist
