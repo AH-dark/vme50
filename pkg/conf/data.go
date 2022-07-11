@@ -4,7 +4,7 @@ var SystemConfig = &system{
 	Port:          ":8080",
 	Debug:         false,
 	SessionSecret: "",
-	HashSecret:    "",
+	HashIDSalt:    "",
 }
 
 var DatabaseConfig = &database{

@@ -18,6 +18,7 @@ var options = sessions.Options{
 	Secure:   true,
 }
 
+// Session Session配置中间件
 func Session() gin.HandlerFunc {
 	Store = memstore.NewStore([]byte(conf.SystemConfig.SessionSecret))
 	Store.Options(options)

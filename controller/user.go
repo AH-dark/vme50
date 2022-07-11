@@ -10,6 +10,7 @@ import (
 
 const sessNamespace = "user_info"
 
+// SessionUserHandler 从 Session 获取用户信息
 func SessionUserHandler(c *gin.Context) {
 	sess := utils.GetSession(c, sessNamespace)
 	if sess == nil {
@@ -27,12 +28,13 @@ func SessionUserHandler(c *gin.Context) {
 	response.DataHandle(c, userInfo)
 }
 
-type userLoginData struct {
-	Login    string `json:"login"`
-	Password string `json:"password"`
-}
-
+// UserLogin 用户登录
 func UserLogin(c *gin.Context) {
+	type userLoginData struct {
+		Login    string `json:"login"`
+		Password string `json:"password"`
+	}
+
 	var loginData userLoginData
 	err := c.BindJSON(&loginData)
 	if err != nil {

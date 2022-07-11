@@ -3,9 +3,9 @@ package service
 import (
 	"errors"
 	"github.com/AH-dark/random-donate/model"
+	"github.com/AH-dark/random-donate/pkg/utils"
 	"gorm.io/gorm"
 	"math/rand"
-	"strconv"
 )
 
 func DonateInfoIsExist(info *model.DonateInfo) (bool, error) {
@@ -13,6 +13,8 @@ func DonateInfoIsExist(info *model.DonateInfo) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+
+	utils.Log().Debug("Count Table DonateInfo, has %d rows", count)
 
 	return count != 0, nil
 }
@@ -28,12 +30,11 @@ func DonateInfoFind(info *model.DonateInfo) (model.DonateInfo, error) {
 	return dbData, err
 }
 
-func DonateInfoRandomGet(prevId string) (model.DonateInfo, error) {
+func DonateInfoRandomGet(prevId uint) (model.DonateInfo, error) {
 	var data model.DonateInfo
-	prevIdNum, _ := strconv.Atoi(prevId)
 	not := model.DonateInfo{
 		Model: gorm.Model{
-			ID: uint(prevIdNum),
+			ID: prevId,
 		},
 	}
 

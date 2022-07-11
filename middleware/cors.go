@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Cors 跨域中间件
 func Cors() gin.HandlerFunc {
 	config := cors.Config{
 		AllowOriginFunc: func(origin string) bool {

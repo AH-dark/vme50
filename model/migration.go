@@ -40,7 +40,7 @@ func migration() {
 
 	err := DB.AutoMigrate(&Setting{}, &DonateInfo{}, &User{})
 	if err != nil {
-		utils.Log().Panic("数据库初始化时错误，", err.Error())
+		utils.Log().Panic("数据库初始化时错误，%s", err.Error())
 		return
 	}
 

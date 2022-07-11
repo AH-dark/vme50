@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+// GetBasicSettings 获取基本站点信息
 func GetBasicSettings(c *gin.Context) {
 	settings := model.GetSettingByType([]string{"basic"})
 
