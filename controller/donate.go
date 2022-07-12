@@ -99,22 +99,16 @@ func DonatePostHandler(c *gin.Context) {
 
 // DonateRandomGetHandler 随机获取一条信息
 func DonateRandomGetHandler(c *gin.Context) {
+	var prevId uint = 0
+
 	// 取值处理
 	sessPrevId := utils.GetSession(c, "random_donate_prev_id")
-	prevHash := hash.Id(0, hash.DonateId)
 	if sessPrevId != nil {
-		prevHash = sessPrevId.(string)
-	}
-
-	// 获取Hash
-	hashCode, err := hash.DecodeID(prevHash, hash.DonateId)
-	if err != nil {
-		response.ServerErrorHandle(c, err)
-		return
+		prevId = sessPrevId.(uint)
 	}
 
 	// 获取数据
-	data, err := service.DonateInfoRandomGet(hashCode)
+	data, err := service.DonateInfoRandomGet(prevId)
 	if err != nil {
 		response.ServerErrorHandle(c, err)
 		return
@@ -124,7 +118,7 @@ func DonateRandomGetHandler(c *gin.Context) {
 		"random_donate_prev_id": data.ID,
 	})
 
-	utils.Log().Debug("random donate info: prev: %v, new: %d", hashCode, data.ID)
+	utils.Log().Debug("random donate info: prev: %d, new: %d", sessPrevId, data.ID)
 
 	c.JSON(http.StatusOK, &dataType.ApiResponse{
 		Code:    http.StatusOK,
