@@ -10,7 +10,7 @@ require (
 	github.com/gin-contrib/static v0.0.1
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-ini/ini v1.67.0
-	github.com/go-playground/validator/v10 v10.11.0
+	github.com/go-playground/validator/v10 v10.11.1
 	github.com/makiuchi-d/gozxing v0.1.1
 	github.com/mholt/archiver/v4 v4.0.0-alpha.7
 	github.com/speps/go-hashids v1.0.0
